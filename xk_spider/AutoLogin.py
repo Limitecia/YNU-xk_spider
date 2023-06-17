@@ -9,7 +9,7 @@ import ast
 
 class AutoLogin:
     def __init__(self, url, path, name='', pswd=''):
-        self.driver = webdriver.Chrome(executable_path=path)
+        self.driver = webdriver.Chrome()
         self.name = name
         self.url = url
         self.pswd = pswd
@@ -19,9 +19,9 @@ class AutoLogin:
         self.driver.get(self.url)
         self.driver.implicitly_wait(5)
 
-        name_ele = self.driver.find_element_by_xpath('//input[@id="loginName"]')
+        name_ele = self.driver.find_element(By.XPATH,'//input[@id="loginName"]')
         name_ele.send_keys(self.name)
-        pswd_ele = self.driver.find_element_by_xpath('//input[@id="loginPwd"]')
+        pswd_ele = self.driver.find_element(By.XPATH,'//input[@id="loginPwd"]')
         pswd_ele.send_keys(self.pswd)
 
         if WebDriverWait(self.driver, 180).until(EC.presence_of_element_located((By.ID, 'aPublicCourse'))):

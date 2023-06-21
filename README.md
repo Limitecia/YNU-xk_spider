@@ -1,6 +1,6 @@
 # YNU-xk_spider
-   
-# 原项目移步https://github.com/starwingChen/YNU-xk_spider 仅fork调试供自己使用
+# 2023.6.21更新 崩溃重启脚本以及自动填写验证码   
+# Fork by https://github.com/starwingChen/YNU-xk_spider 
 
 
 ## 项目环境：

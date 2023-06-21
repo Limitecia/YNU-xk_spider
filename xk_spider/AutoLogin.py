@@ -5,6 +5,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException
 import time
 import ast
+import ddddocr
 
 
 class AutoLogin:
@@ -14,15 +15,43 @@ class AutoLogin:
         self.url = url
         self.pswd = pswd
 
+    def get_image_code(self, image_bytes):
+        ocr = ddddocr.DdddOcr()
+
+        text = ocr.classification(image_bytes)
+
+        return text
     def get_params(self):
         # 获得必要参数
-        self.driver.get(self.url)
-        self.driver.implicitly_wait(5)
+        while 1:
+            self.driver.get(self.url)
+            time.sleep(2)
+            self.driver.implicitly_wait(15)
+            name_ele = self.driver.find_element(By.XPATH,'//input[@id="loginName"]')
+            name_ele.send_keys(self.name)
+            pswd_ele = self.driver.find_element(By.XPATH,'//input[@id="loginPwd"]')
+            pswd_ele.send_keys(self.pswd)
 
-        name_ele = self.driver.find_element(By.XPATH,'//input[@id="loginName"]')
-        name_ele.send_keys(self.name)
-        pswd_ele = self.driver.find_element(By.XPATH,'//input[@id="loginPwd"]')
-        pswd_ele.send_keys(self.pswd)
+            el_image_code = self.driver.find_element(By.ID, "vcodeImg")#验证码图片
+            text_code = self.get_image_code(el_image_code.screenshot_as_png)
+
+            el_input = self.driver.find_element(By.XPATH,'//input[@id="verifyCode"]')#验证码输入框
+            el_input.send_keys(text_code)
+
+            start_ele = self.driver.find_element(By.XPATH, '//button[@id="studentLoginBtn"]')#开始按钮
+            start_ele.click()
+
+
+            time.sleep(1)
+            sure_ele = self.driver.find_element(By.XPATH, '//*[@id="errorMsg"]')
+            if not sure_ele.is_displayed():
+                sure1_ele = self.driver.find_element(By.XPATH, '//*[@id="buttons"]/button[2]')
+                sure1_ele.click()
+                sure2_ele = self.driver.find_element(By.XPATH, '//button[@id="courseBtn"]')
+                sure2_ele.click()
+                break
+
+
 
         if WebDriverWait(self.driver, 180).until(EC.presence_of_element_located((By.ID, 'aPublicCourse'))):
             time.sleep(1)  # waiting for loading

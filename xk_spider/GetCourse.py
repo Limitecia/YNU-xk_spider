@@ -2,6 +2,7 @@ import requests
 import ast
 import time
 import re
+import winsound
 from requests.exceptions import HTTPError
 
 
@@ -84,12 +85,13 @@ class GetCourse:
                     if remain > 0 and course['teacherName'] == teacher:
                         string = f'{course_name} {teacher}：{remain}人空缺'
                         print(string)
-                        to_wechat(key, f'{course_name} 余课提醒', string)
+                        winsound.Beep(500, 3000)
+                        to_wechat(key, f'{course_name} 余 课提醒', string)
                         res = self.post_add(course_name, teacher, classtype, course['teachingClassID'], key)
                         return res
 
                 print(f'{course_name} {teacher}：人数已满 {time.ctime()}')
-                time.sleep(15)
+                time.sleep(2)
 
             except HTTPError or SyntaxError:
                 print('登录失效，请重新登录')
